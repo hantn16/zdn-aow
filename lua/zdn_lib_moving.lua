@@ -20,6 +20,13 @@ local function getPlayer()
 	return client:GetPlayer()
 end
 
+local function getVisualObj(obj)
+	if not nx_is_valid(obj) then
+		return
+	end
+	return nx_value("game_visual"):GetSceneObj(obj.Ident)
+end
+
 local function setAngle(x, y, z)
 	local role = nx_value("role")
 	local scene_obj = nx_value("scene_obj")
@@ -27,6 +34,13 @@ local function setAngle(x, y, z)
 		return
 	end
 	scene_obj:SceneObjAdjustAngle(role, x, z)
+end
+
+local function setAngleToObj(obj)
+	local vObj = getVisualObj(obj)
+	if nx_is_valid(vObj) then
+		setAngle(vObj.PositionX, vObj.PositionY, vObj.PositionZ)
+	end
 end
 
 local function waitToCollide(x, y, z, seconds)
@@ -560,13 +574,6 @@ local function isFindPathStuck()
 	return true
 end
 
-local function getVisualObj(obj)
-	if not nx_is_valid(obj) then
-		return
-	end
-	return nx_value("game_visual"):GetSceneObj(obj.Ident)
-end
-
 local function sendHomePointMsgToServer(...)
 	nx_execute("form_stage_main\\form_homepoint\\home_point_data", "send_homepoint_msg_to_server", unpack(arg))
 end
@@ -754,4 +761,38 @@ function GetPlayerPosition()
 		return 0, 0, 0
 	end
 	return role.PositionX, role.PositionY, role.PositionZ
+end
+
+function IsMapLoading()
+	local form = nx_value("form_common\\form_loading")
+	if nx_is_valid(form) and form.Visible then
+		nx_pause(1)
+		return true
+	end
+	return false
+end
+
+function WalkingToTargetObj(obj)
+	local role = nx_value("role")
+	if not nx_is_valid(role) then
+		return
+	end
+	local game_visual = nx_value("game_visual")
+	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
+		return
+	end
+	local obj = nx_execute("zdn_logic_skill", "getTargetObj")
+	if not nx_is_valid(obj) then
+		return
+	end
+
+	role.server_pos_can_accept = true
+	setAngleToObj(obj)
+	role.move_dest_orient = role.AngleY
+	game_visual:SetRoleMoveDistance(role, 50)
+	game_visual:SetRoleMaxMoveDistance(role, 50)
+	game_visual:SwitchPlayerState(role, 1, 44)
+	game_visual:SwitchPlayerState(role, 1, 3)
+	nx_pause(1.2)
+	game_visual:SwitchPlayerState(role, 1, 1)
 end
