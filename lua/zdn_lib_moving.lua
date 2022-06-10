@@ -630,6 +630,22 @@ local function isHaveHomePoint(homePointId)
 	return false
 end
 
+local function isWalkFinished(playerDestX, playerDestZ)
+	local game_visual = nx_value("game_visual")
+	if not nx_is_valid(game_visual) then
+		return false
+	end
+	local visualPlayer = game_visual:GetPlayer()
+	if not nx_is_valid(visualPlayer) then
+		return false
+	end
+	local px = string.format("%.3f", visualPlayer.PositionX)
+	local pz = string.format("%.3f", visualPlayer.PositionZ)
+	local dx = player.DestX
+	local dz = player.DestZ
+	return 1 >= distance2d(px, pz, dx, dz)
+end
+
 -- Public
 function TeleToHomePoint(homePoint)
 	if isCurseLoading() then
@@ -772,7 +788,7 @@ function IsMapLoading()
 	return false
 end
 
-function WalkingToObj(obj)
+function WalkToObj(obj)
 	local role = nx_value("role")
 	local game_visual = nx_value("game_visual")
 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
@@ -793,4 +809,35 @@ function WalkingToObj(obj)
 	game_visual:SwitchPlayerState(role, 1, 3)
 	nx_pause(1.2)
 	game_visual:SwitchPlayerState(role, 1, 1)
+end
+
+function WalkToPosInstantly(x, y, z)
+	local role = nx_value("role")
+	local game_visual = nx_value("game_visual")
+	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
+		return
+	end
+	setAngle(x, y, z)
+	game_visual:SwitchPlayerState(role, 1, 77)
+	role.move_dest_orient = role.AngleY
+	role.server_pos_can_accept = true
+
+	role:SetPosition(role.PositionX, y, role.PositionZ)
+	local d = GetDistance(x, y, z)
+	game_visual:SetRoleMoveDestX(role, x)
+	game_visual:SetRoleMoveDestY(role, y)
+	game_visual:SetRoleMoveDestZ(role, z)
+	game_visual:SetRoleMoveDistance(role, d)
+	game_visual:SetRoleMoveSpeed(role, 1000)
+	game_visual:SetRoleJumpSpeed(role, 0)
+	game_visual:SetRoleMaxMoveDistance(role, d)
+	game_visual:SwitchPlayerState(role, 1, 103)
+	local scene = nx_value("game_scene")
+	local player = getPlayer()
+	local dx = player.DestX
+	local dz = player.DestZ
+	while (nx_is_valid(scene) and not scene.terrain.LoadFinish) or
+		(nx_is_valid(player) and nx_is_valid(visualPlayer) and not isWalkFinished(dx, dz)) do
+		nx_pause(0)
+	end
 end

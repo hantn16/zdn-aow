@@ -15,7 +15,10 @@ function CanRun()
         return false
     end
     local resetTimeStr =
-        IniReadUserConfig("ThienThe", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"))
+        IniReadUserConfig("ThienThe", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"), "")
+    if resetTimeStr == "" then
+        return true
+    end
     return nx_execute("zdn_logic_base", "GetCurrentDayStartTimestamp") >= nx_number(resetTimeStr)
 end
 
@@ -62,8 +65,8 @@ function doMatchScene()
         return
     end
     if GetDistanceToObj(obj) < 2.8 then
-        if nx_running("zdn_lib_moving", "WalkingToObj", obj) then
-            nx_kill("zdn_lib_moving", "WalkingToObj")
+        if nx_running("zdn_lib_moving", "WalkToObj", obj) then
+            nx_kill("zdn_lib_moving", "WalkToObj")
         end
         nx_execute("zdn_logic_base", "SelectTarget", obj)
         if (nx_execute("zdn_logic_skill", "IsRunning")) then
@@ -73,7 +76,7 @@ function doMatchScene()
         end
     else
         nx_execute("zdn_logic_skill", "PauseAttack")
-        nx_execute("zdn_lib_moving", "WalkingToObj", obj)
+        nx_execute("zdn_lib_moving", "WalkToObj", obj)
     end
 end
 
