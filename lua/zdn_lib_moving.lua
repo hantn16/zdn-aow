@@ -772,20 +772,18 @@ function IsMapLoading()
 	return false
 end
 
-function WalkingToTargetObj(obj)
+function WalkingToObj(obj)
 	local role = nx_value("role")
-	if not nx_is_valid(role) then
-		return
-	end
 	local game_visual = nx_value("game_visual")
 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
 		return
 	end
-	local obj = nx_execute("zdn_logic_skill", "getTargetObj")
 	if not nx_is_valid(obj) then
 		return
 	end
-
+	if role.state ~= "static" then
+		return
+	end
 	role.server_pos_can_accept = true
 	setAngleToObj(obj)
 	role.move_dest_orient = role.AngleY

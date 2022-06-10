@@ -1,3 +1,4 @@
+require("zdn_util")
 function custom_chat(chat_type, content, ...)
   local filter = nx_execute("zdn_chat_filter", "FilterCommand", nx_widestr(content))
   if filter then
