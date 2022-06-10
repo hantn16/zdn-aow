@@ -126,6 +126,14 @@ function startQuest()
         onTaskDone()
         return
     end
+
+    if nx_find_custom(npc, "Head_Effect_Flag") and nx_string(npc.Head_Effect_Flag) == nx_string(0) then
+        nx_pause(2)
+        if nx_find_custom(npc, "Head_Effect_Flag") and nx_string(npc.Head_Effect_Flag) == nx_string(0) then
+            onTaskDone()
+            return
+        end
+    end
 end
 
 function throwStone(stone)

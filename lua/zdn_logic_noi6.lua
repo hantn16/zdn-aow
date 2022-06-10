@@ -1,6 +1,5 @@
 require("zdn_lib\\util_functions")
 require("zdn_util")
-require("zdn_logic_jump")
 local Running = false
 local TodoList = {
     {"Kim Lăng 1", "zdn_logic_noi6_kl1"},
