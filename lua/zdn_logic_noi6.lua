@@ -5,7 +5,8 @@ local Running = false
 local TodoList = {
     {"Kim Lăng 1", "zdn_logic_noi6_kl1"},
     {"Kim Lăng 2", "zdn_logic_noi6_kl2"},
-    {"Tô Châu", "zdn_logic_noi6_tc"}
+    {"Tô Châu", "zdn_logic_noi6_tc"},
+    {"Lạc Dương", "zdn_logic_noi6_ld"}
 }
 
 function IsRunning()

@@ -22,7 +22,7 @@ end
 
 local function getVisualObj(obj)
 	if not nx_is_valid(obj) then
-		return
+		return 0
 	end
 	return nx_value("game_visual"):GetSceneObj(obj.Ident)
 end
@@ -812,6 +812,9 @@ function WalkToObj(obj)
 end
 
 function WalkToPosInstantly(x, y, z)
+	if GetDistance(x, y, z) <= 1 then
+		return
+	end
 	local role = nx_value("role")
 	local game_visual = nx_value("game_visual")
 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
@@ -840,4 +843,12 @@ function WalkToPosInstantly(x, y, z)
 		(nx_is_valid(player) and nx_is_valid(visualPlayer) and not isWalkFinished(dx, dz)) do
 		nx_pause(0)
 	end
+end
+
+function WalkToObjInstantly(obj)
+	local vObj = getVisualObj(obj)
+	if not nx_is_valid(vObj) then
+		return
+	end
+	WalkToPosInstantly(vObj.PositionX, vObj.PositionY, vObj.PositionZ)
 end
