@@ -165,7 +165,7 @@ end
 
 function startSceneQuest(npc)
     XuongNgua()
-   StopFindPath()
+    StopFindPath()
     nx_execute("custom_sender", "custom_select", npc.Ident)
     nx_execute("custom_sender", "custom_select", npc.Ident)
     nx_pause(1)
@@ -225,7 +225,7 @@ end
 
 function finishSceneQuest(npc)
     XuongNgua()
-   StopFindPath()
+    StopFindPath()
     nx_execute("custom_sender", "custom_select", npc.Ident)
     nx_execute("custom_sender", "custom_select", npc.Ident)
     nx_pause(1)

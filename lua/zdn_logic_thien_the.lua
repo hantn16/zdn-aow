@@ -14,8 +14,7 @@ function CanRun()
     if h < 14 or h >= 22 then
         return false
     end
-    local resetTimeStr =
-        IniReadUserConfig("ThienThe", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"), "")
+    local resetTimeStr = IniReadUserConfig("ThienThe", "ResetTime", "")
     if resetTimeStr == "" then
         return true
     end

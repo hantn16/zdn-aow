@@ -660,6 +660,7 @@ function TeleToHomePoint(homePoint)
 		nx_pause(1)
 		useHomePoint(homePoint)
 	end
+	nx_pause(1)
 end
 
 function GoToMapByPublicHomePoint(map)
