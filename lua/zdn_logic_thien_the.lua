@@ -111,6 +111,13 @@ function isAttackable(obj)
 end
 
 function prepareForMatch()
+    if IsMapLoading() then
+        TimerMapLoading = TimerInit()
+        return
+    end
+    if TimerDiff(TimerMapLoading) < 5 then
+        return
+    end
     if processPrizeForm() then
         return
     end

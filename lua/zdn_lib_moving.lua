@@ -69,13 +69,22 @@ local function waitToCollide(x, y, z, seconds)
 end
 
 local function jumpTo(x, y, z)
+	if nx_execute("zdn_logic_thien_the", "IsRunning") then
+		return
+	end
 	local role = nx_value("role")
-	if not nx_is_valid(role) or not nx_is_valid(nx_value("game_visual")) then
+	local gameVisual = nx_value("game_visual")
+	local gameClient = nx_value("game_client")
+	if not nx_is_valid(role) or not nx_is_valid(gameVisual) or not nx_is_valid(gameClient) then
+		return
+	end
+	local clientPlayer = gameClient:GetPlayer()
+	if nx_string(clientPlayer:QueryProp("CantMove")) == nx_string("1") then
 		return
 	end
 	StopFindPath()
 	setAngle(x, y, z)
-	nx_value("game_visual"):SwitchPlayerState(role, 1, 9)
+	gameVisual:SwitchPlayerState(role, 1, 9)
 	waitToCollide(x, y, z)
 end
 
@@ -801,6 +810,7 @@ function WalkToObj(obj)
 	if role.state ~= "static" then
 		return
 	end
+	local TimerWalking = TimerInit()
 	role.server_pos_can_accept = true
 	setAngleToObj(obj)
 	role.move_dest_orient = role.AngleY
@@ -808,7 +818,14 @@ function WalkToObj(obj)
 	game_visual:SetRoleMaxMoveDistance(role, 50)
 	game_visual:SwitchPlayerState(role, 1, 44)
 	game_visual:SwitchPlayerState(role, 1, 3)
-	nx_pause(1.2)
+	while TimerDiff(TimerWalking) < 15 do
+		local gameClient = nx_value("game_client")
+		local clientPlayer = gameClient:GetPlayer()
+		if nx_string(clientPlayer:QueryProp("CantMove")) == nx_string("1") then
+			break
+		end
+		nx_pause(0.1)
+	end
 	game_visual:SwitchPlayerState(role, 1, 1)
 end
 
@@ -853,3 +870,12 @@ function WalkToObjInstantly(obj)
 	end
 	WalkToPosInstantly(vObj.PositionX, vObj.PositionY, vObj.PositionZ)
 end
+
+-- function StopWalking()
+-- 	local role = nx_value("role")
+-- 	local game_visual = nx_value("game_visual")
+-- 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
+-- 		return
+-- 	end
+-- 	game_visual:SwitchPlayerState(role, 1, 1)
+-- end
