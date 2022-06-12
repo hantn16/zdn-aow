@@ -11,6 +11,7 @@ local function isCurseLoading()
 	end
 	local load = nx_value("form_stage_main\\form_main\\form_main_curseloading")
 	if nx_is_valid(load) and load.Visible then
+		TimerTele = TimerInit()
 		return true
 	end
 	return false

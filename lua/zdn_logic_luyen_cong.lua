@@ -37,7 +37,6 @@ function Start()
         return
     end
     Running = true
-    Console("Running Luyen cong..")
     while Running do
         loopLuyenCong()
         nx_pause(1)

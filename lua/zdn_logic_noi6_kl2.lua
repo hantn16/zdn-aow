@@ -222,7 +222,6 @@ function exitQuestScene(npc)
 end
 
 function onTaskDone()
-    Console("On task DOne")
     local newResetTimeStr = QUEST_ID .. "," .. nx_execute("zdn_logic_base", "GetNextDayStartTimestamp")
     local resetTimeStr = IniReadUserConfig("NhiemVuNoi6", "ResetTime", "")
     if resetTimeStr ~= "" then

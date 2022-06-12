@@ -95,8 +95,31 @@ function checkNextTask()
             return
         end
     end
+
+    -- while needToWait() do
+    --     for i = 1, cnt do
+    --         local logic = TASK_LIST[TodoList[i]][2]
+    --         if nx_execute(logic, "CanRun") then
+    --             Console("Next task: " .. TASK_LIST[TodoList[i]][1])
+    --             nx_execute(logic, "Start")
+    --             return
+    --         end
+    --     end
+    --     nx_pause(5)
+    -- end
     Console("All task is done.")
     Stop()
+end
+
+function needToWait()
+    for i = 1, cnt do
+        local logic = TASK_LIST[TodoList[i]][2]
+        if nx_execute(logic, "CanWait") then
+            waitFlg = true
+            return true
+        end
+    end
+    return false
 end
 
 function onTaskInterrupt(source)

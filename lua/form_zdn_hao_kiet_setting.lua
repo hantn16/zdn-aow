@@ -8,12 +8,6 @@ function onBtnAddPositionClick()
 	local map = GetCurMap()
 	local posX, posY, posZ = GetPlayerPosition()
 	addRowToPositionGrid(map, posX, posY, posZ, true)
-	local f = nx_value("fight")
-	nx_bind_script(f, nx_current(), "TraceUseSkill")
-end
-
-function TraceUseSkill(...)
-	Console("ahihi")
 end
 
 function onFormOpen()

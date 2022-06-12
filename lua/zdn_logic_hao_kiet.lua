@@ -25,7 +25,6 @@ function Start()
         Stop()
         return
     end
-    Console("Running Haokiet...")
     nx_execute("zdn_logic_skill", "LeaveTeam")
     nx_execute("Listener", "addListen", nx_current(), "30409", "onFullBoss", -1)
     nx_execute("Listener", "addListen", nx_current(), "30361", "onFullBoss", -1)

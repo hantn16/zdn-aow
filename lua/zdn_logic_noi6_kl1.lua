@@ -368,7 +368,6 @@ function isMapLoading()
 end
 
 function onTaskDone()
-    Console("on taskDone")
     local newResetTimeStr = QUEST_ID .. "," .. nx_execute("zdn_logic_base", "GetNextDayStartTimestamp")
     local resetTimeStr = IniReadUserConfig("NhiemVuNoi6", "ResetTime", "")
     if resetTimeStr ~= "" then
