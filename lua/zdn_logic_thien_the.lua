@@ -64,9 +64,6 @@ function doMatchScene()
         return
     end
     if GetDistanceToObj(obj) < 2.8 then
-        if nx_running("zdn_lib_moving", "WalkToObj", obj) then
-            nx_kill("zdn_lib_moving", "WalkToObj")
-        end
         nx_execute("zdn_logic_base", "SelectTarget", obj)
         if (nx_execute("zdn_logic_skill", "IsRunning")) then
             nx_execute("zdn_logic_skill", "ContinueAttack")
