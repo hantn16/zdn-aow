@@ -157,6 +157,9 @@ function throwStone(stone)
     while Running and nx_execute("zdn_logic_skill", "HaveBuff", "buf_6n_wyhs_cd_01") do
         nx_pause(0.1)
     end
+    if not nx_is_valid(throwObj) then
+        return
+    end
     nx_execute("custom_sender", "custom_select", throwObj.Ident)
     nx_pause(0.2)
     nx_execute("custom_sender", "custom_select", throwObj.Ident)

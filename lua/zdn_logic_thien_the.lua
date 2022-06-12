@@ -112,7 +112,7 @@ function prepareForMatch()
         TimerMapLoading = TimerInit()
         return
     end
-    if TimerDiff(TimerMapLoading) < 5 then
+    if TimerDiff(TimerMapLoading) < 6 then
         return
     end
     if processPrizeForm() then

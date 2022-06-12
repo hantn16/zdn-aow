@@ -804,9 +804,14 @@ function WalkToObj(obj)
 	if not nx_is_valid(obj) or not nx_is_valid(role) or not nx_is_valid(game_visual) then
 		return
 	end
-	-- if role.state ~= "static" then
-	-- 	return
-	-- end
+	if role.state ~= "static" then
+		return
+	end
+	local gameClient = nx_value("game_client")
+	clientPlayer = gameClient:GetPlayer()
+	if nx_string(clientPlayer:QueryProp("CantMove")) == nx_string("1") then
+		return
+	end
 	local TimerWalking = TimerInit()
 	role.server_pos_can_accept = true
 	setAngleToObj(obj)
@@ -816,8 +821,6 @@ function WalkToObj(obj)
 	game_visual:SwitchPlayerState(role, 1, 44)
 	game_visual:SwitchPlayerState(role, 1, 3)
 	while TimerDiff(TimerWalking) < 1.2 and GetDistanceToObj(obj) > 2 do
-		local gameClient = nx_value("game_client")
-		local clientPlayer = gameClient:GetPlayer()
 		if nx_string(clientPlayer:QueryProp("CantMove")) == nx_string("1") then
 			break
 		end
