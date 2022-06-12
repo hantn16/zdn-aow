@@ -3,8 +3,12 @@ require("zdn_util")
 
 local PublicHomePointList = {}
 local TimerFindPath = 0
+local TimerTele = 0
 
 local function isCurseLoading()
+	if TimerDiff(TimerTele) < 3 then
+		return true
+	end
 	local load = nx_value("form_stage_main\\form_main\\form_main_curseloading")
 	if nx_is_valid(load) and load.Visible then
 		return true
@@ -669,7 +673,7 @@ function TeleToHomePoint(homePoint)
 		nx_pause(1)
 		useHomePoint(homePoint)
 	end
-	nx_pause(1)
+	TimerTele = TimerInit()
 end
 
 function GoToMapByPublicHomePoint(map)
