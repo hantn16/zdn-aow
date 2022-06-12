@@ -6,6 +6,7 @@ require("zdn_logic_jump")
 local Running = false
 local QUEST_ID = "ld"
 local THROW_POS = {0.17558604478836, 20.536001205444, 12.483154296875}
+local CENTER_POS = {-1.5259571075439, 21.753995895386, -24.10789680481}
 
 function IsRunning()
     return Running
@@ -175,7 +176,11 @@ function doQuest()
     while Running and isInQuestScene() do
         local lvl2Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl2Stone")
         if not nx_is_valid(lvl2Stone) then
-            break
+            WalkToPosInstantly(CENTER_POS[1], CENTER_POS[2], CENTER_POS[3])
+            lvl2Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl2Stone")
+            if not nx_is_valid(lvl2Stone) then
+                break
+            end
         end
         throwStone(lvl2Stone)
     end
