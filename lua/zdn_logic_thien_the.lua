@@ -10,15 +10,15 @@ function IsRunning()
 end
 
 function CanRun()
-    local h = nx_execute("zdn_logic_base", "GetCurrentHour")
-    if h < 14 or h >= 22 then
-        return false
-    end
+    return not IsTaskDone() and isInTaskTime()
+end
+
+function IsTaskDone()
     local resetTimeStr = IniReadUserConfig("ThienThe", "ResetTime", "")
     if resetTimeStr == "" then
-        return true
+        return false
     end
-    return nx_execute("zdn_logic_base", "GetCurrentDayStartTimestamp") >= nx_number(resetTimeStr)
+    return nx_execute("zdn_logic_base", "GetCurrentDayStartTimestamp") < nx_number(resetTimeStr)
 end
 
 function Start()
@@ -183,4 +183,12 @@ end
 function onTaskDone()
     IniWriteUserConfig("ThienThe", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"))
     Stop()
+end
+
+function isInTaskTime()
+    local h = nx_execute("zdn_logic_base", "GetCurrentHour")
+    if h < 14 or h >= 22 then
+        return false
+    end
+    return true
 end

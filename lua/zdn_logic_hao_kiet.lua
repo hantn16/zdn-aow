@@ -17,6 +17,10 @@ function CanRun()
     return loadSetting()
 end
 
+function IsTaskDone()
+    return not CanRun()
+end
+
 function Start()
     if Running then
         return

@@ -69,6 +69,10 @@ function CanRun()
     return nx_execute("zdn_logic_base", "GetCurrentDayStartTimestamp") >= nx_number(resetTimeStr)
 end
 
+function IsTaskDone()
+    return not CanRun()
+end
+
 function Start()
     if Running then
         return

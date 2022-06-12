@@ -44,6 +44,10 @@ function CanRun()
     return false
 end
 
+function IsTaskDone()
+    return not CanRun()
+end
+
 function GetCompleteTimes()
     local mgr = nx_value("InteractManager")
     if not nx_is_valid(mgr) then

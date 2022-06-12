@@ -32,6 +32,10 @@ function CanRun()
     return value > 10
 end
 
+function IsTaskDone()
+    return not CanRun()
+end
+
 function Start()
     if Running then
         return

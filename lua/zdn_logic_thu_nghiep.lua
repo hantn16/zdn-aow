@@ -11,7 +11,20 @@ function IsRunning()
 end
 
 function CanRun()
-    return not isDone() and isEventTime()
+    return not IsTaskDone() and isInTaskTime()
+end
+
+function IsTaskDone()
+    local client = nx_value("game_client")
+    local player = client:GetPlayer()
+    if not nx_is_valid(player) then
+        return false
+    end
+    local progress = player:QueryProp("SchoolDanceDayScore")
+    if nx_int(progress) == nx_int(60) then
+        return true
+    end
+    return false
 end
 
 function Start()
@@ -108,20 +121,7 @@ function loopThuNghiep()
     end
 end
 
-function isDone()
-    local client = nx_value("game_client")
-    local player = client:GetPlayer()
-    if not nx_is_valid(player) then
-        return false
-    end
-    local progress = player:QueryProp("SchoolDanceDayScore")
-    if nx_int(progress) == nx_int(60) then
-        return true
-    end
-    return false
-end
-
-function isEventTime()
+function isInTaskTime()
     local hour = nx_execute("zdn_logic_base", "GetCurrentHour")
     if 7.5 < hour and hour < 9 then
         return true
