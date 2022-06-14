@@ -88,12 +88,8 @@ function startQuest()
             return
         end
         XuongNgua()
-        nx_execute("custom_sender", "custom_select", npc1.Ident)
-        nx_execute("custom_sender", "custom_select", npc1.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc1, 0)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc1, 0)
+        TalkToNpc(npc1, 0)
+        TalkToNpc(npc1, 0)
         return
     end
 
@@ -102,12 +98,8 @@ function startQuest()
             GoToObj(npc1)
             return
         end
-        nx_execute("custom_sender", "custom_select", npc1.Ident)
-        nx_execute("custom_sender", "custom_select", npc1.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc1, 0)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc1, 0)
+        TalkToNpc(npc1, 0)
+        TalkToNpc(npc1, 0)
         Stop()
         return
     end
@@ -132,11 +124,8 @@ function startQuest()
     end
 
     XuongNgua()
-    nx_execute("custom_sender", "custom_select", npc2.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc2, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc2, 0)
+    TalkToNpc(npc2, 0)
+    TalkToNpc(npc2, 0)
     nx_pause(4)
 end
 
@@ -259,16 +248,9 @@ function showStep(step)
         FlyToObj(npc)
         return
     end
-
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, step)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(0.1)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, step)
+    TalkToNpc(npc, 0)
 end
 
 function getBuffAndReturnToBoss()
@@ -285,15 +267,8 @@ function getBuffAndReturnToBoss()
         FlyToObj(boss)
         return
     end
-
-    nx_execute("custom_sender", "custom_select", boss.Ident)
-    nx_execute("custom_sender", "custom_select", boss.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", boss, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", boss, 0)
-    nx_pause(0.2)
-
+    TalkToNpc(boss, 0)
+    TalkToNpc(boss, 0)
     exitQuestScene()
 end
 
@@ -306,12 +281,8 @@ function exitQuestScene()
         FlyToObj(npc)
         nx_pause(0.2)
     end
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, 0)
     nx_pause(4)
 end
 
