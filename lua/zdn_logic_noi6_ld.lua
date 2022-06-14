@@ -86,16 +86,9 @@ function startQuest()
             return
         end
         XuongNgua()
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-        nx_pause(0.2)
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+        TalkToNpc(npc,0)
+        TalkToNpc(npc,0)
+        TalkToNpc(npc,0)
         return
     end
 
@@ -105,10 +98,7 @@ function startQuest()
             return
         end
         XuongNgua()
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+        TalkToNpc(0)
         return
     end
 
@@ -118,12 +108,8 @@ function startQuest()
             return
         end
         XuongNgua()
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_execute("custom_sender", "custom_select", npc.Ident)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-        nx_pause(1)
-        nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+        TalkToNpc(npc,0)
+        TalkToNpc(npc,0)
         onTaskDone()
         return
     end
@@ -142,13 +128,7 @@ function throwStone(stone)
         return
     end
     WalkToObjInstantly(stone)
-    nx_execute("custom_sender", "custom_select", stone.Ident)
-    nx_pause(0.2)
-    nx_execute("custom_sender", "custom_select", stone.Ident)
-    nx_execute("custom_sender", "custom_select", stone.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", stone, 0)
-    nx_pause(0.2)
+    TalkToNpc(stone, 0)
     WalkToPosInstantly(THROW_POS[1], THROW_POS[2], THROW_POS[3])
     local throwObj = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isThrowObj")
     while Running and not nx_is_valid(throwObj) do
@@ -161,22 +141,19 @@ function throwStone(stone)
     if not nx_is_valid(throwObj) then
         return
     end
-    nx_execute("custom_sender", "custom_select", throwObj.Ident)
-    nx_pause(0.2)
-    nx_execute("custom_sender", "custom_select", throwObj.Ident)
-    nx_execute("custom_sender", "custom_select", throwObj.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", throwObj, 0)
-    nx_pause(0.2)
+    TalkToNpc(throwObj, 0)
 end
 
 function doQuest()
+    local lvl4Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl4Stone")
+    throwStone(lvl4Stone)
     local lvl3Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl3Stone")
     throwStone(lvl3Stone)
     while Running and isInQuestScene() do
         local lvl2Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl2Stone")
         if not nx_is_valid(lvl2Stone) then
             WalkToPosInstantly(CENTER_POS[1], CENTER_POS[2], CENTER_POS[3])
+            nx_pause(1.5)
             lvl2Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl2Stone")
             if not nx_is_valid(lvl2Stone) then
                 break
@@ -184,6 +161,22 @@ function doQuest()
         end
         throwStone(lvl2Stone)
     end
+    while Running and isInQuestScene() do
+        local lvl1Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl1Stone")
+        if not nx_is_valid(lvl1Stone) then
+            WalkToPosInstantly(CENTER_POS[1], CENTER_POS[2], CENTER_POS[3])
+            nx_pause(1.5)
+            lvl1Stone = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isLvl1Stone")
+            if not nx_is_valid(lvl1Stone) then
+                break
+            end
+        end
+        throwStone(lvl1Stone)
+    end
+end
+
+function isLvl4Stone(obj)
+    return obj:QueryProp("ConfigID") == "npc_6n_lh_wyhs_smxs04"
 end
 
 function isLvl3Stone(obj)
@@ -192,6 +185,10 @@ end
 
 function isLvl2Stone(obj)
     return obj:QueryProp("ConfigID") == "npc_6n_lh_wyhs_smxs02"
+end
+
+function isLvl1Stone(obj)
+    return obj:QueryProp("ConfigID") == "npc_6n_lh_wyhs_smxs01"
 end
 
 function isThrowObj(obj)

@@ -904,6 +904,9 @@ function TalkToNpc(npc, talkIndex)
 	local index = talkIndex % 4
 	local timerStart = TimerInit()
 	while TimerDiff(timerStart) < timeOut and (not nx_is_valid(form) or not form.Visible) do
+		if not nx_is_valid(npc) then
+			return
+		end
 		nx_execute("custom_sender", "custom_select", npc.Ident)
 		form = nx_value("form_stage_main\\form_talk_movie")
 		nx_pause(0.1)
