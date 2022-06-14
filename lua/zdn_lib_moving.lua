@@ -849,6 +849,10 @@ function WalkToPosInstantly(x, y, z)
 	if GetDistance(x, y, z) <= 1 then
 		return
 	end
+	if nx_number(y) > nx_number(900000) then
+		return
+	end
+	Console(y)
 	local role = nx_value("role")
 	local game_visual = nx_value("game_visual")
 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
@@ -896,12 +900,12 @@ function TalkToNpc(npc, talkIndex)
 		return
 	end
 	local form = nx_value("form_stage_main\\form_talk_movie")
-	local page = talkIndex / 4
+	local page = math.floor(talkIndex / 4)
 	if page >= 1 then
-		form.menu_page = form.menu_page + page
+		form.menu_page = page + 1
 		nx_execute("form_stage_main\\form_talk_movie", "update_menu_control", form, form.menus)
 	end
-	local index = talkIndex % 4
+	local index = math.floor(talkIndex % 4)
 	local timerStart = TimerInit()
 	while TimerDiff(timerStart) < timeOut and (not nx_is_valid(form) or not form.Visible) do
 		if not nx_is_valid(npc) then
@@ -916,7 +920,7 @@ function TalkToNpc(npc, talkIndex)
 	end
 	XuongNgua()
 	local ctl = form.mltbox_menu
-	local funcid = ctl:GetItemKeyByIndex(talkIndex)
+	local funcid = ctl:GetItemKeyByIndex(index)
 	nx_execute("form_stage_main\\form_talk_movie", "menu_select", funcid)
 	nx_pause(1)
 end

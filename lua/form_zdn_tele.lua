@@ -32,7 +32,6 @@ end
 
 function addMapRow(form, map)
 	local map_grid = form.mapgrid
-	-- Console(map)
 	local control = createMapHyperlink(form)
 	if not nx_is_valid(control) then
 		return

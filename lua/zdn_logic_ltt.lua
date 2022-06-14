@@ -71,7 +71,7 @@ function goToLadder()
         XuongNgua()
     end
     local x, y, z = GetPlayerPosition()
-    if (LADDER_UPPER_POS_Y - y < 1 and LADDER_UPPER_POS_Y - y > 0) or LADDER_UPPER_POS_Y - y < -1 then
+    if (LADDER_UPPER_POS_Y - y < 2 and LADDER_UPPER_POS_Y - y > 0) or LADDER_UPPER_POS_Y - y < -2 then
         FlyToPos(UPPER_POS[1], UPPER_POS[2], UPPER_POS[3])
         return
     end
@@ -171,6 +171,28 @@ function doBossScene()
         return
     end
     nx_execute("zdn_logic_skill", "PauseAttack")
+    if TimerDiff(TimerWaitForTalk) > 4 then
+        selectCurrentSchoolIndex()
+    end
+end
+
+function isWaitingForTalkResult()
+    return
+end
+
+function nextSchool()
+    if not Running then
+        return
+    end
+    schoolIndex = schoolIndex + 1
+    if schoolIndex >= 9 then
+        onTaskDone()
+        return
+    end
+    selectCurrentSchoolIndex()
+end
+
+function selectCurrentSchoolIndex()
     local handlerNpc = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isBossSceneNpc")
     if not nx_is_valid(handlerNpc) then
         return
@@ -178,16 +200,10 @@ function doBossScene()
     if GetDistanceToObj(handlerNpc) > 3 then
         WalkToObjInstantly(handlerNpc)
     end
-    Console("talk to handler")
-    Console(nx_string("schoolIndex :") .. nx_string(schoolIndex))
-    nx_execute("Listener", "addListen", nx_current(), "newworld_lingxia_biwunpc_002_talk_043", "nextSchool", 5)
+    TimerWaitForTalk = TimerInit()
     TalkToNpc(handlerNpc, 0)
+    nx_execute("Listener", "addListen", nx_current(), "newworld_lingxia_biwunpc_002_talk_043", "nextSchool", 4)
     TalkToNpc(handlerNpc, schoolIndex)
-    nx_pause(8)
-end
-
-function nextSchool()
-    schoolIndex = schoolIndex + 1
 end
 
 function isBossSceneAttackNpc(obj)
@@ -254,6 +270,7 @@ function isAttackable(obj)
 end
 
 function onTaskDone()
-    -- IniWriteUserConfig("ThienThe", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"))
+    ShowText("Lang tieu thanh is done")
+    --IniWriteUserConfig("LangTieuThanh", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"))
     Stop()
 end
