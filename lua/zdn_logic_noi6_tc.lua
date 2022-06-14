@@ -123,15 +123,9 @@ end
 
 function acceptQuest(npc)
     StopFindPath()
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(0.5)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, 0)
 end
 
 function doQuest()
@@ -166,15 +160,9 @@ end
 function startSceneQuest(npc)
     XuongNgua()
     StopFindPath()
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(0.2)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, 0)
+    TalkToNpc(npc, 0)
 end
 
 function processSceneQuest()
@@ -214,7 +202,6 @@ function selectObj(obj)
     if GetDistanceToObj(obj) > 2 then
         FlyToObj(obj)
     end
-    -- nx_pause(1)
     if not nx_is_valid(obj) then
         return
     end
@@ -226,11 +213,7 @@ end
 function finishSceneQuest(npc)
     XuongNgua()
     StopFindPath()
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_execute("custom_sender", "custom_select", npc.Ident)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
-    nx_pause(1)
-    nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+    TalkToNpc(npc,0)
+    TalkToNpc(npc,0)
     onTaskDone()
 end
