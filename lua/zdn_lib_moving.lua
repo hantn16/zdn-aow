@@ -77,6 +77,9 @@ local function jumpTo(x, y, z)
 	if nx_execute("zdn_logic_thien_the", "IsRunning") then
 		return
 	end
+	if nx_execute("zdn_logic_ltt", "IsRunning") then
+		return
+	end
 	local role = nx_value("role")
 	local gameVisual = nx_value("game_visual")
 	local gameClient = nx_value("game_client")
@@ -804,12 +807,20 @@ function IsMapLoading()
 end
 
 function WalkToObj(obj)
-	local role = nx_value("role")
-	local game_visual = nx_value("game_visual")
-	if not nx_is_valid(obj) or not nx_is_valid(role) or not nx_is_valid(game_visual) then
+	local vObj = getVisualObj(obj)
+	if not nx_is_valid(vObj) then
 		return
 	end
-	if role.state ~= "static" then
+	WalkToPosition(vObj.PositionX, vObj.PositionY, vObj.PositionZ)
+end
+
+function WalkToPosition(x, y, z)
+	local role = nx_value("role")
+	local game_visual = nx_value("game_visual")
+	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
+		return
+	end
+	if role.state ~= "static" and role.state ~= "link_stop" then
 		return
 	end
 	local gameClient = nx_value("game_client")
@@ -819,13 +830,13 @@ function WalkToObj(obj)
 	end
 	local TimerWalking = TimerInit()
 	role.server_pos_can_accept = true
-	setAngleToObj(obj)
+	setAngle(x, y, z)
 	role.move_dest_orient = role.AngleY
 	game_visual:SetRoleMoveDistance(role, 50)
 	game_visual:SetRoleMaxMoveDistance(role, 50)
 	game_visual:SwitchPlayerState(role, 1, 44)
 	game_visual:SwitchPlayerState(role, 1, 3)
-	while TimerDiff(TimerWalking) < 1.2 and GetDistanceToObj(obj) > 2 do
+	while TimerDiff(TimerWalking) < 1.2 and GetDistance(x, y, z) > 2 do
 		if nx_string(clientPlayer:QueryProp("CantMove")) == nx_string("1") then
 			break
 		end
@@ -841,6 +852,9 @@ function WalkToPosInstantly(x, y, z)
 	local role = nx_value("role")
 	local game_visual = nx_value("game_visual")
 	if not nx_is_valid(role) or not nx_is_valid(game_visual) then
+		return
+	end
+	if role.state == "locked" then
 		return
 	end
 	setAngle(x, y, z)
@@ -874,4 +888,32 @@ function WalkToObjInstantly(obj)
 		return
 	end
 	WalkToPosInstantly(vObj.PositionX, vObj.PositionY, vObj.PositionZ)
+end
+
+function TalkToNpc(npc, talkIndex)
+	local timeOut = 3
+	if not nx_is_valid(npc) then
+		return
+	end
+	local form = nx_value("form_stage_main\\form_talk_movie")
+	local page = talkIndex / 4
+	if page >= 1 then
+		form.menu_page = form.menu_page + page
+		nx_execute("form_stage_main\\form_talk_movie", "update_menu_control", form, form.menus)
+	end
+	local index = talkIndex % 4
+	local timerStart = TimerInit()
+	while TimerDiff(timerStart) < timeOut and (not nx_is_valid(form) or not form.Visible) do
+		nx_execute("custom_sender", "custom_select", npc.Ident)
+		form = nx_value("form_stage_main\\form_talk_movie")
+		nx_pause(0.1)
+	end
+	if not nx_is_valid(form) or not form.Visible then
+		return
+	end
+	XuongNgua()
+	local ctl = form.mltbox_menu
+	local funcid = ctl:GetItemKeyByIndex(talkIndex)
+	nx_execute("form_stage_main\\form_talk_movie", "menu_select", funcid)
+	nx_pause(1)
 end

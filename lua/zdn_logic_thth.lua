@@ -456,7 +456,7 @@ function endGame()
         if not isInBossScene() then
             local form = nx_value("form_zdn_thth")
             if nx_is_valid(form) then
-                form.btn_submit.Text = nx_widestr("You'r dead")
+                form.btn_submit.Text = nx_widestr("Dead")
             end
             Stop()
         end

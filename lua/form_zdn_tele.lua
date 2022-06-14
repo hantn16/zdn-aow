@@ -21,6 +21,9 @@ function onFormOpen(form)
 	for i = 1, cnt do
 		addMapRow(form, MapSection[nx_string(i)])
 	end
+	-- for debug
+	dofile("D:\\auto\\debug.lua")
+	-- for debug
 end
 
 function onBtnCloseClick()
