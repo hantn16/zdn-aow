@@ -198,18 +198,19 @@ function isBossSceneAttackNpc(obj)
     return false
 end
 
-function checkHpAndMp(ngoiThienFlg)
+function checkHpAndMp()
     local client = nx_value("game_client")
     local player = client:GetPlayer()
     if not nx_is_valid(player) then
         return false
     end
+    if nx_string(player:QueryProp("LogicState")) == nx_string("1") then
+        return true
+    end
     local hpRatio = nx_number(player:QueryProp("HPRatio"))
     local mpRatio = nx_number(player:QueryProp("MPRatio"))
     if hpRatio < 95 or mpRatio < 95 then
-        if ngoiThienFlg then
-            nx_execute("zdn_logic_skill", "NgoiThien")
-        end
+        nx_execute("zdn_logic_skill", "NgoiThien")
         return false
     else
         nx_execute("zdn_logic_skill", "StopNgoiThien")
@@ -220,17 +221,20 @@ end
 function doAttackNpc(npc)
     if not isAttackable(npc) then
         nx_execute("zdn_logic_skill", "PauseAttack")
-        checkHpAndMp(true)
+        local handlerNpc = nx_execute("zdn_logic_base", "GetNearestObj", nx_current(), "isBossSceneNpc")
+        if nx_is_valid(handlerNpc) then
+            WalkToObjInstantly(handlerNpc)
+        end
+        checkHpAndMp()
         return
     end
-    if not checkHpAndMp(false) then
+    if not checkHpAndMp() then
         return
     end
     nx_execute("zdn_logic_base", "SelectTarget", npc)
     if GetDistanceToObj(npc) > 2.8 then
         nx_execute("zdn_logic_skill", "PauseAttack")
         WalkToObjInstantly(npc)
-        return
     end
     if nx_execute("zdn_logic_skill", "IsRunning") then
         nx_execute("zdn_logic_skill", "ContinueAttack")
