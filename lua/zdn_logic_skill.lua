@@ -114,7 +114,7 @@ end
 
 function Fly()
     if not isFlying() then
-        switchFly()
+        SwitchPlayerStateToFly()
     end
 end
 
@@ -413,16 +413,6 @@ end
 function isFlying()
     local state = getPlayerState()
     return state == "jump_fall" or state == "jump" or state == "jump_second" or state == "jump_third"
-end
-
-function switchFly()
-    StopFindPath()
-    local game_visual = nx_value("game_visual")
-    local role = nx_value("role")
-    if not nx_is_valid(game_visual) or not nx_is_valid(role) then
-        return
-    end
-    game_visual:SwitchPlayerState(role, 1, 5)
 end
 
 function checkWeapon()

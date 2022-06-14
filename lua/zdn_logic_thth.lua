@@ -1,6 +1,5 @@
 require("util_functions")
 require("util_gui")
--- require("share\\view_define")
 require("form_stage_main\\form_main\\form_main_shortcut_extraskill")
 require("zdn_util")
 require("zdn_lib_moving")
@@ -803,7 +802,7 @@ function flyToPos(cur_x, cur_y, cur_z, x, y, z)
         return
     end
 
-    nx_execute("zdn_logic_skill", "switchFly")
+    SwitchPlayerStateToFly()
     nx_pause(0.2)
     y = y + 0.1
     setAngle(x, y, z)

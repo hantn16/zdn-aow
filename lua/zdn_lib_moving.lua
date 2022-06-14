@@ -920,3 +920,13 @@ function TalkToNpc(npc, talkIndex)
 	nx_execute("form_stage_main\\form_talk_movie", "menu_select", funcid)
 	nx_pause(1)
 end
+
+function SwitchPlayerStateToFly()
+	StopFindPath()
+	local game_visual = nx_value("game_visual")
+	local role = nx_value("role")
+	if not nx_is_valid(game_visual) or not nx_is_valid(role) then
+		return
+	end
+	game_visual:SwitchPlayerState(role, 1, 5)
+end
