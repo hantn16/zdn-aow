@@ -22,7 +22,7 @@ function onFormOpen(form)
 		addMapRow(form, MapSection[nx_string(i)])
 	end
 	-- for debug
-	dofile("D:\\auto\\debug.lua")
+	-- dofile("D:\\auto\\debug.lua")
 	-- for debug
 end
 

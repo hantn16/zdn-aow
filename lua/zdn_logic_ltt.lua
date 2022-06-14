@@ -1,5 +1,5 @@
 require("zdn_lib_moving")
-require("zdn_logic_jump")
+require("zdn_lib_jump")
 
 local Running = false
 local LADDER_POS = {535.17767333984, 116.4740447998, 188.96406555176}

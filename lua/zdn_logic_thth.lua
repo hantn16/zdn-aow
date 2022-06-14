@@ -3,6 +3,7 @@ require("util_gui")
 require("form_stage_main\\form_main\\form_main_shortcut_extraskill")
 require("zdn_util")
 require("zdn_lib_moving")
+require("zdn_lib_jump")
 local THICH_QUAN_FORM_PATH = "form_stage_main\\form_tiguan\\form_tiguan_one"
 require(THICH_QUAN_FORM_PATH)
 

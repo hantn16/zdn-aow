@@ -1,7 +1,7 @@
 require("zdn_lib\\util_functions")
 require("zdn_util")
 require("zdn_lib_moving")
-require("zdn_logic_jump")
+require("zdn_lib_jump")
 
 local Running = false
 local QUEST_ID = "tc"

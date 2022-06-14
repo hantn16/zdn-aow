@@ -29,33 +29,10 @@ local function isFlying(...)
     return false
 end
 
-local function collide(...)
+local function flyToPos(cur_x, cur_y, cur_z, x, y, z, instantlyFlg)
+    local role = nx_value("role")
     local game_visual = nx_value("game_visual")
-    local role = nx_value("role")
-    if not nx_is_valid(game_visual) or not nx_is_valid(role) then
-        return
-    end
-    game_visual:SetRoleMoveDistance(role, 1)
-    game_visual:SetRoleMaxMoveDistance(role, 1)
-    game_visual:SwitchPlayerState(role, 1, 103)
-    role.state = "zdn_jump"
-end
-
-local function setCollide(x, y, z)
-    local game_visual = nx_value("game_visual")
-    local role = nx_value("role")
-    if not nx_is_valid(game_visual) or not nx_is_valid(role) then
-        return
-    end
-    game_visual:SetRoleMoveDestX(role, x)
-    game_visual:SetRoleMoveDestY(role, y)
-    game_visual:SetRoleMoveDestZ(role, z)
-end
-
-local function flyToPos(cur_x, cur_y, cur_z, x, y, z)
-    local role = nx_value("role")
-    local scene_obj = nx_value("scene_obj")
-    if not nx_is_valid(scene_obj) or not nx_is_valid(role) then
+    if not nx_is_valid(role) or not nx_is_valid(game_visual) then
         return
     end
     local dis = distance3d(role.PositionX, role.PositionY, role.PositionZ, cur_x, cur_y, cur_z)
@@ -64,53 +41,32 @@ local function flyToPos(cur_x, cur_y, cur_z, x, y, z)
     end
 
     SwitchPlayerStateToFly()
-    nx_pause(0.2)
+    nx_pause(0.1)
     y = y + 0.1
     setAngle(x, y, z)
     local temp_angle = role.AngleY
-    nx_call("player_state\\state_input", "emit_player_input", role, 21, 36, x, y, z, 0, 3)
-    role.state = "zdn_jump"
-    nx_pause(2.8)
+    if not instantlyFlg then
+        nx_call("player_state\\state_input", "emit_player_input", role, 21, 36, x, y, z, 0, 2.8)
+        nx_pause(1.1)
+    end
+
     role.move_dest_orient = temp_angle
-    setCollide(x, y, z)
-    collide()
-    local out_time = TimerInit()
-    while TimerDiff(out_time) < 3 do
-        nx_pause(0.1)
+    game_visual:SetRoleMoveDestX(role, x)
+    game_visual:SetRoleMoveDestY(role, y)
+    game_visual:SetRoleMoveDestZ(role, z)
+    game_visual:SetRoleMoveDistance(role, 1)
+    game_visual:SetRoleMaxMoveDistance(role, 1)
+    game_visual:SwitchPlayerState(role, 1, 103)
+    role.state = "zdn_jump"
+
+    local timeOut = TimerInit()
+    while TimerDiff(timeOut) < 3 do
+        nx_pause(0.05)
         if not isFlying() then
             return
         end
     end
 end
-
--- local function flyToPosFlat(cur_x, cur_y, cur_z, x, y, z)
---     local role = nx_value("role")
---     local game_visual = nx_value("game_visual")
---     if not nx_is_valid(role) or not nx_is_valid(game_visual) then
---         return
---     end
---     local d = GetDistance(x, y, z)
---     if d < 1 then
---         return
---     end
---     setAngle(x, y, z)
---     role.move_dest_orient = role.AngleY
---     role.server_pos_can_accept = true
---     role:SetPosition(role.PositionX, y, role.PositionZ)
---     game_visual:SetRoleMoveDestX(role, x)
---     game_visual:SetRoleMoveDestY(role, y)
---     game_visual:SetRoleMoveDestZ(role, z)
---     game_visual:SetRoleMoveDistance(role, d)
---     game_visual:SetRoleMaxMoveDistance(role, d)
---     game_visual:SwitchPlayerState(role, 1, 103)
---     local timeOut = TimerInit()
---     while TimerDiff(timeOut) < 3 do
---         nx_pause(0.1)
---         if not isFlying() then
---             return
---         end
---     end
--- end
 
 local function getVisualObj(obj)
     if not nx_is_valid(obj) then
@@ -133,7 +89,12 @@ end
 
 function FlyToPos(posX, posY, posZ)
     local pX, pY, pZ = GetPlayerPosition()
-    flyToPos(pX, pY, pZ, posX, posY, posZ)
+    flyToPos(pX, pY, pZ, posX, posY, posZ, false)
+end
+
+function FlyToPosInstantly(posX, posY, posZ)
+    local pX, pY, pZ = GetPlayerPosition()
+    flyToPos(pX, pY, pZ, posX, posY, posZ, true)
 end
 
 -- die instantly
