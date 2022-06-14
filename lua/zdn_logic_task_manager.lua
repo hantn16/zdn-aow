@@ -56,37 +56,28 @@ function addToTodoList(i, checked)
 end
 
 function startTaskManager()
-    local cnt = #TodoList
-    for i = 1, cnt do
-        local logic = TASK_LIST[TodoList[i]][2]
-        nx_execute("zdn_logic_common_listener", "Subscribe", logic, "on-task-stop", nx_current(), "onTaskStop")
-        nx_execute(
-            "zdn_logic_common_listener",
-            "Subscribe",
-            logic,
-            "on-task-interrupt",
-            nx_current(),
-            "onTaskInterrupt"
-        )
-    end
     checkNextTask()
 end
 
 function onTaskStop(logic)
-    Console(logic .. " stopped")
+    local logicName = logic
+    local cnt = #TodoList
+    for i = 1, cnt do
+        local l = TASK_LIST[TodoList[i]][2]
+        if l == logic then
+            logicName = TASK_LIST[TodoList[i]][1]
+            break
+        end
+    end
+    Console(logicName .. " stopped")
     checkNextTask()
 end
 
 function checkNextTask()
     Console("Check next task")
-    local cnt = #TodoList
-    for i = 1, cnt do
-        local logic = TASK_LIST[TodoList[i]][2]
-        if nx_execute(logic, "IsRunning") then
-            nx_execute(logic, "Stop")
-        end
-    end
+    stopAllTaskSilently()
 
+    local cnt = #TodoList
     for i = 1, cnt do
         local logic = TASK_LIST[TodoList[i]][2]
         if nx_execute(logic, "CanRun") then
@@ -111,8 +102,44 @@ function checkNextTask()
     Stop()
 end
 
+function stopAllTaskSilently()
+    local cnt = #TodoList
+    unsubscribeAllTaskEvent()
+    for i = 1, cnt do
+        local logic = TASK_LIST[TodoList[i]][2]
+        if nx_execute(logic, "IsRunning") then
+            nx_execute(logic, "Stop")
+        end
+    end
+    subscribeAllTaskEvent()
+end
+
+function unsubscribeAllTaskEvent()
+    local cnt = #TodoList
+    for i = 1, cnt do
+        local logic = TASK_LIST[TodoList[i]][2]
+        nx_execute("zdn_logic_common_listener", "Unsubscribe", logic, "on-task-stop", nx_current())
+        nx_execute("zdn_logic_common_listener", "Unsubscribe", logic, "on-task-interrupt", nx_current())
+    end
+end
+
+function subscribeAllTaskEvent()
+    local cnt = #TodoList
+    for i = 1, cnt do
+        local logic = TASK_LIST[TodoList[i]][2]
+        nx_execute("zdn_logic_common_listener", "Subscribe", logic, "on-task-stop", nx_current(), "onTaskStop")
+        nx_execute(
+            "zdn_logic_common_listener",
+            "Subscribe",
+            logic,
+            "on-task-interrupt",
+            nx_current(),
+            "onTaskInterrupt"
+        )
+    end
+end
+
 function needToWait()
-    Console("Need to wait is called")
     local cnt = #TodoList
     for i = 1, cnt do
         local logic = TASK_LIST[TodoList[i]][2]
@@ -135,7 +162,7 @@ function onTaskInterrupt(source)
         end
         if nx_execute(logic, "CanRun") then
             Console("Task interrupted")
-            nx_execute(logic, "Stop")
+            nx_execute(source, "Stop")
             return
         end
     end

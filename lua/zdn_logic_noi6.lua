@@ -48,14 +48,9 @@ end
 
 function checkNextTask()
     Console("Check next quest")
+    stopAllTaskSilently()
+    
     local cnt = #TodoList
-    for i = 1, cnt do
-        local logic = TodoList[i][2]
-        if nx_execute(logic, "IsRunning") then
-            nx_execute(logic, "Stop")
-        end
-    end
-
     for i = 1, cnt do
         local logic = TodoList[i][2]
         if nx_execute(logic, "CanRun") then
@@ -68,17 +63,50 @@ function checkNextTask()
     Stop()
 end
 
-function startNoi6()
+function stopAllTaskSilently()
+    local cnt = #TodoList
+    unsubscribeAllTaskEvent()
+    for i = 1, cnt do
+        local logic = TodoList[i][2]
+        if nx_execute(logic, "IsRunning") then
+            nx_execute(logic, "Stop")
+        end
+    end
+    subscribeAllTaskEvent()
+end
+
+function unsubscribeAllTaskEvent()
+    local cnt = #TodoList
+    for i = 1, cnt do
+        local logic = TodoList[i][2]
+        nx_execute("zdn_logic_common_listener", "Unsubscribe", logic, "on-task-stop", nx_current())
+    end
+end
+
+function subscribeAllTaskEvent()
     local cnt = #TodoList
     for i = 1, cnt do
         local logic = TodoList[i][2]
         nx_execute("zdn_logic_common_listener", "Subscribe", logic, "on-task-stop", nx_current(), "onTaskStop")
     end
+end
+
+function startNoi6()
     checkNextTask()
 end
 
 function onTaskStop(logic)
-    Console(logic .. " stopped")
+    local logicName = logic
+    local cnt = #TodoList
+    for i = 1, cnt do
+        local l = TodoList[i][2]
+        if l == logic then
+            logicName = TodoList[i][1]
+            break
+        end
+    end
+
+    Console(logicName .. " stopped")
     nx_execute("zdn_logic_common_listener", "ResolveListener", nx_current(), "on-task-interrupt")
     checkNextTask()
 end
