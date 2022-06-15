@@ -1,6 +1,13 @@
 require("zdn_util")
 require("zdn_lib_moving")
 
+local function getCurrentDayOfWeek()
+    local msgDelay = nx_value("MessageDelay")
+    local currentDateTime = msgDelay:GetServerDateTime()
+    local year, month, day, hour, mins, sec = nx_function("ext_decode_date", nx_double(currentDateTime))
+    return nx_function("ext_get_day_of_week", year, month, day) - 1
+end
+
 function GetLogicState()
     local role = nx_value("role")
     if not nx_is_valid(role) then
@@ -81,6 +88,16 @@ function GetCurrentTimestamp()
     return msgDelay:GetServerSecond()
 end
 
+function GetCurrentWeekStartTimestamp()
+    local dow = getCurrentDayOfWeek()
+    local d = GetCurrentDayStartTimestamp()
+    return d - (dow * 86400)
+end
+
+function GetNextWeekStartTimestamp()
+    return GetCurrentWeekStartTimestamp() + 604800
+end
+
 function GetNearestObj(...)
     local client = nx_value("game_client")
     local scene = client:GetScene()
@@ -125,14 +142,4 @@ function SelectTarget(obj)
         return
     end
     nx_execute("custom_sender", "custom_select", obj.Ident)
-end
-
-function TalkToNpc(npc, index)
-    local form = nx_value("form_stage_main\\form_talk_movie")
-    if not nx_is_valid(form) or not form.Visible then
-        return
-    end
-    local ctl = form.mltbox_menu
-    local funcid = ctl:GetItemKeyByIndex(index)
-    nx_execute("form_stage_main\\form_talk_movie", "menu_select", funcid)
 end

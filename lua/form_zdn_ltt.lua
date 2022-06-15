@@ -1,6 +1,3 @@
--- for debug
-require("util_gui")
--- for debug
 require("zdn_form_common")
 
 local Logic = "zdn_logic_ltt"
@@ -12,9 +9,6 @@ function onFormOpen()
 	else
 		Form.btn_submit.Text = nx_widestr("Start")
 	end
-	-- for debug
-	util_show_form("form_zdn_log", true)
-	-- for debug
 end
 
 function onBtnSubmitClick()

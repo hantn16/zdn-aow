@@ -479,9 +479,7 @@ function requestLeaveViaNpc()
         if GetDistanceToObj(npc) > 4 then
             GoToObj(npc)
         else
-            nx_execute("custom_sender", "custom_select", npc.Ident)
-            nx_pause(0.2)
-            nx_execute("zdn_logic_base", "TalkToNpc", npc, 0)
+            TalkToNpc(npc, 0)
         end
     else
         local guanId = getCurGuanId()

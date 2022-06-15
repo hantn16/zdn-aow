@@ -94,9 +94,7 @@ function talkToNpc()
     if not nx_is_valid(npcObj) then
         return false
     end
-    nx_execute("custom_sender", "custom_select", npcObj.Ident)
-    nx_pause(0.2)
-    nx_execute("zdn_logic_base", "TalkToNpc", npcObj, 0)
+    TalkToNpc(npcObj, 0)
 end
 
 function loopThuNghiep()

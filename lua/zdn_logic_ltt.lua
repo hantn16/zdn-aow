@@ -3,9 +3,9 @@ require("zdn_lib_jump")
 
 local Running = false
 local LADDER_POS = {535.17767333984, 116.4740447998, 188.96406555176}
-local LADDER_UPPER_POS_Y = 144.60726928711
-local UPPER_POS = {543.20672607422, 146.85484313965, 188.45074462891}
-local LTT_SCENE_NPC_POS_Y_THRESHOLD = 144
+local LADDER_UPPER_POS_Y = 135.82707214355
+local UPPER_POS = {540.52563476563, 145.79000854492, 188.92681884766}
+local LTT_SCENE_NPC_POS_Y_THRESHOLD = 145
 local schoolIndex = 0
 
 function IsRunning()
@@ -17,12 +17,11 @@ function CanRun()
 end
 
 function IsTaskDone()
-    return false
-    -- local resetTimeStr = IniReadUserConfig("ThienThe", "ResetTime", "")
-    -- if resetTimeStr == "" then
-    --     return false
-    -- end
-    -- return nx_execute("zdn_logic_base", "GetCurrentDayStartTimestamp") < nx_number(resetTimeStr)
+    local resetTimeStr = IniReadUserConfig("LangTieuThanh", "ResetTime", "")
+    if resetTimeStr == "" then
+        return false
+    end
+    return nx_execute("zdn_logic_base", "GetCurrentWeekStartTimestamp") < nx_number(resetTimeStr)
 end
 
 function Start()
@@ -39,12 +38,17 @@ end
 
 function Stop()
     Running = false
+    nx_execute("Listener", "removeListen", nx_current(), "newworld_lingxia_biwunpc_002_talk_043", "nextSchool")
     nx_execute("zdn_logic_skill", "StopAutoAttack")
     StopFindPath()
     nx_execute("zdn_logic_common_listener", "ResolveListener", nx_current(), "on-task-stop")
 end
 
 function loopLtt()
+    if not CanRun() then
+        Stop()
+        return
+    end
     if IsMapLoading() then
         nx_pause(2)
         return
@@ -71,8 +75,8 @@ function goToLadder()
         XuongNgua()
     end
     local x, y, z = GetPlayerPosition()
-    if (LADDER_UPPER_POS_Y - y < 2 and LADDER_UPPER_POS_Y - y > 0) or LADDER_UPPER_POS_Y - y < -2 then
-        FlyToPos(UPPER_POS[1], UPPER_POS[2], UPPER_POS[3])
+    if (LADDER_UPPER_POS_Y - y < 1 and LADDER_UPPER_POS_Y - y > 0) or LADDER_UPPER_POS_Y - y < -1 then
+        HighJumpToPos(UPPER_POS[1], UPPER_POS[2], UPPER_POS[3])
         return
     end
     if isOnLadder() then
@@ -250,7 +254,7 @@ function doAttackNpc(npc)
     nx_execute("zdn_logic_base", "SelectTarget", npc)
     if GetDistanceToObj(npc) > 2.8 then
         nx_execute("zdn_logic_skill", "PauseAttack")
-        WalkToObjInstantly(npc)
+        WalkToObj(npc)
     end
     if nx_execute("zdn_logic_skill", "IsRunning") then
         nx_execute("zdn_logic_skill", "ContinueAttack")
@@ -270,7 +274,6 @@ function isAttackable(obj)
 end
 
 function onTaskDone()
-    ShowText("Lang tieu thanh is done")
-    --IniWriteUserConfig("LangTieuThanh", "ResetTime", nx_execute("zdn_logic_base", "GetNextDayStartTimestamp"))
+    IniWriteUserConfig("LangTieuThanh", "ResetTime", nx_execute("zdn_logic_base", "GetNextWeekStartTimestamp"))
     Stop()
 end
